@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
 import Shimmer from "./Shimmer";
 import { useParams } from "react-router-dom";
-import { MENU_API } from "../utils/Constant";
 import useRestaurantMenu from "../utils/useRestaurantMenu";
+import RestaurantCategory from "../components/RestaurantCategory"
+import { useState } from "react";
 
 const RestaurantMenu = () =>{
 
-
+  const [showIndex, setShowIndex] = useState(null);
   
   const {resId}  = useParams();
 
@@ -15,21 +15,26 @@ const RestaurantMenu = () =>{
   if(resInfo === null) return <Shimmer />;
 
   const { name, cuisines, costForTwoMessage} = resInfo?.cards[2]?.card?.card?.info;
-  console.log("resinfo",resInfo)
 
-    const { itemCards } = resInfo.cards[4].groupedCard.cardGroupMap.REGULAR.cards[2].card.card || {};
- console.log("sd",itemCards)
+  const { itemCards } = resInfo.cards[4].groupedCard.cardGroupMap.REGULAR.cards[2].card.card || {};
+  console.log("sd",resInfo.cards[4].groupedCard.cardGroupMap.REGULAR)
+  const filteredCategory = resInfo.cards[4].groupedCard.cardGroupMap.REGULAR.cards.filter((category) => category.card?.card?.["@type"] === "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory")
+  console.log("filtered category", filteredCategory)
     return   (
-        <div className="Menu">
-            <h1>{name}</h1>
-            <p>{cuisines.join(", ")} - {costForTwoMessage}</p>
-            <h2>Menu</h2>
-            <ul>
-                {itemCards.map(res =>
-                  <li key={res.card.info.id}>{res.card.info.name} - Rs.{res.card.info.price/100}</li>  
-                )}
-                
-            </ul>
+        <div className="text-center">
+            <h1 className="font-bold my-8 text-2xl">{name}</h1>
+            <p className="font-bold text-lg">{cuisines.join(", ")} - {costForTwoMessage}</p>
+           
+           {/* controlled components */}
+
+            {filteredCategory.map((category, Index) => 
+              <RestaurantCategory key={category?.card?.card.title} categoryData={category.card?.card} showItem={Index === showIndex ? true : false } 
+              setShowIndex = {() => setShowIndex(Index)}/>
+            )}
+
+
+
+
         </div>
     )
 }

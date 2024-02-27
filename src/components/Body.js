@@ -1,7 +1,8 @@
-import RestaurantCard from "./RestaurantCard";
-import { useEffect, useState } from "react";
+import RestaurantCard, { promotedRestaurantCard } from "./RestaurantCard";
+import { useContext, useEffect, useState } from "react";
 import Shimmer from "./Shimmer"
 import { Link } from "react-router-dom";
+import UserContext from "../utils/UserContext";
 
 
 const BodyComponent = () => {
@@ -13,12 +14,18 @@ const BodyComponent = () => {
  
   const [searchText, setSearchText] = useState("");
 
+  console.log("listOfRestaurants",listOfRestaurants)
+
+  const PromotedRestaurantCard = promotedRestaurantCard();
+
+  const {loggedInUser, setUserName} = useContext(UserContext);
+
   useEffect(() => {
   fetchData() 
 
-  return() =>{
-    console.log("unmount the body")
-  }
+  // return() =>{
+  //   console.log("unmount the body")
+  // }
  }, []);
 
   const fetchData = async () =>{
@@ -28,18 +35,17 @@ const BodyComponent = () => {
   setfilteredRestaurant(json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
  
 }
-
+ 
 //conditional Rendering
 return  (listOfRestaurants.length === 0)? <Shimmer/>: ( 
       <div className="body">
-      <div className="filter"> 
-      <div className="search">
-      <input type="text" className="search-box" value={searchText} onChange={(event) =>{
+      <div className="flex"> 
+      <div className="search m-4 p-4">
+      <input className="border border-solid border-black" type="text"  value={searchText} onChange={(event) =>{
      
         setSearchText(event.target.value);
       }} />
-      <button onClick={ () =>{
-        console.log(searchText,listOfRestaurants[0].info.name);
+      <button className="px-4 py-2 bg-green-100 m-4 rounded-lg" onClick={ () =>{
         const filteredrest = listOfRestaurants.filter(
           (res) =>  res.info.name.toLowerCase().includes(searchText.toLowerCase())
         );
@@ -48,7 +54,8 @@ return  (listOfRestaurants.length === 0)? <Shimmer/>: (
 
       }} >search</button>
       </div>
-       <button className="filter-btn" 
+      <div className="m-4 p-4 flex items-center">
+      <button className="px-4 py-2 bg-gray-100" 
        onClick={() => {
         const filteredList = listOfRestaurants.filter(
           (res) => res.info.avgRating > 4.4
@@ -59,11 +66,23 @@ return  (listOfRestaurants.length === 0)? <Shimmer/>: (
        >
         Top Rated Restaurant</button>
       </div>
+      <div className="m-4 p-4 flex items-center">
+        <label>User Name:</label>
+        <input type="text" className="border border-black p-2" value={loggedInUser} onChange={(e) => {
+        setUserName(e.target.value);
+        }} ></input>
+      </div> 
+
+     
+      </div>
   
-      <div className="restro-container">
+      <div className="flex flex-wrap">
       { filteredRestaurant.map(restaurant => (
 
-      <Link  key={restaurant.info.id}  to={"/restaurant/" + restaurant.info.id}> <RestaurantCard resData={restaurant}/></Link> 
+      <Link  key={restaurant.info.id}  to={"/restaurant/" + restaurant.info.id}
+      > {restaurant.info.avgRating === 4.4 ? (<PromotedRestaurantCard resData={restaurant}/>) :
+      ( <RestaurantCard resData={restaurant}/>)}
+      </Link> 
       ))}
       </div>
       </div>

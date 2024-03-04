@@ -14,7 +14,6 @@ const BodyComponent = () => {
  
   const [searchText, setSearchText] = useState("");
 
-  console.log("listOfRestaurants",listOfRestaurants)
 
   const PromotedRestaurantCard = promotedRestaurantCard();
 
@@ -41,7 +40,7 @@ return  (listOfRestaurants.length === 0)? <Shimmer/>: (
       <div className="body">
       <div className="flex"> 
       <div className="search m-4 p-4">
-      <input className="border border-solid border-black" type="text"  value={searchText} onChange={(event) =>{
+      <input className="border border-solid border-black" type="text" data-testid="searchInput" value={searchText} onChange={(event) =>{
      
         setSearchText(event.target.value);
       }} />
@@ -50,21 +49,21 @@ return  (listOfRestaurants.length === 0)? <Shimmer/>: (
           (res) =>  res.info.name.toLowerCase().includes(searchText.toLowerCase())
         );
         setfilteredRestaurant(filteredrest);
-        console.log("333",listOfRestaurants)
 
       }} >search</button>
       </div>
       <div className="m-4 p-4 flex items-center">
-      <button className="px-4 py-2 bg-gray-100" 
+      <button data-testid="top" className="px-4 py-2 bg-gray-100" 
        onClick={() => {
         const filteredList = listOfRestaurants.filter(
-          (res) => res.info.avgRating > 4.4
+          (res) => res.info.avgRating === 4.4
           );
-        setListOfRestaurants(filteredList);
+        // setListOfRestaurants(filteredList);
+        setfilteredRestaurant(filteredList);
+
        }
       } 
-       >
-        Top Rated Restaurant</button>
+       >Top Rated Restaurant</button>
       </div>
       <div className="m-4 p-4 flex items-center">
         <label>User Name:</label>

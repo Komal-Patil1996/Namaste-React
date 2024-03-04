@@ -1,12 +1,6 @@
 // named export
 
-import { useContext } from "react";
 import { CDN_URL } from "../utils/Constant";
-import UserContext from "../utils/UserContext";
-
-const styleCard = {
-    backgroundColor : '#f0f0f0'
-  }
   
 
 const RestaurantCard = (props) => {
@@ -17,7 +11,7 @@ const RestaurantCard = (props) => {
   
 
     return (
-      <div className="m-4 p-4 w-[220px] rounded-lg bg-gray-100 hover:bg-gray-400">
+      <div data-testid="resCard" className="m-4 p-4 w-[220px] rounded-lg bg-gray-100 hover:bg-gray-400">
              <img className="rounded-lg" alt="res-logo" src={CDN_URL + cloudinaryImageId}/>
   
        <h3 className="font-bold py-4 text-lg">{name}</h3>
